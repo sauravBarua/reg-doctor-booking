@@ -1,9 +1,15 @@
 import { Router } from "express";
-import { bookBodySchema, idParamSchema } from "../schemas/index.js";
+import { getAiDeps } from "../ai/index.js";
+import {
+  bookBodySchema,
+  idParamSchema,
+  summaryQuerySchema,
+} from "../schemas/index.js";
 import {
   bookAppointment,
   cancelAppointment,
 } from "../services/appointment.service.js";
+import { getAppointmentSummary } from "../services/summary.service.js";
 
 export const appointmentsRouter = Router();
 
@@ -15,4 +21,10 @@ appointmentsRouter.post("/", async (req, res) => {
 appointmentsRouter.delete("/:id", async (req, res) => {
   const { id } = idParamSchema.parse(req.params);
   res.json(await cancelAppointment(id));
+});
+
+appointmentsRouter.get("/:id/summary", async (req, res) => {
+  const { id } = idParamSchema.parse(req.params);
+  const { type } = summaryQuerySchema.parse(req.query);
+  res.json(await getAppointmentSummary(id, type, getAiDeps()));
 });

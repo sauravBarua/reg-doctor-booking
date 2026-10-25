@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "tsx --env-file=.env prisma/seed.ts"
+    "db:seed": "tsx --env-file=.env prisma/seed.ts",
+    "db:embed": "tsx --env-file=.env prisma/embed-faq.ts",
+    "smoke:ai": "tsx --env-file=.env scripts/smoke-ai.ts"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +28,7 @@
   "packageManager": "pnpm@12.15.0",
   "type": "module",
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "cors": "^2.8.6",

@@ -34,4 +34,32 @@ export const bookBodySchema = z.object({
     .positive(),
 });
 
+export const searchBodySchema = z.object({
+  query: z
+    .string()
+    .trim()
+    .min(2)
+    .max(500),
+});
+
+export const faqBodySchema = z.object({
+  question: z
+    .string()
+    .trim()
+    .min(2)
+    .max(500),
+});
+
+export const messageTypes = [
+  "confirmation",
+  "reminder",
+  "reschedule",
+  "cancellation",
+] as const;
+export type MessageType = typeof messageTypes[number];
+
+export const summaryQuerySchema = z.object({
+  type: z.enum(messageTypes).optional(),
+});
+
 export type DoctorsQuery = z.infer<typeof doctorsQuerySchema>;

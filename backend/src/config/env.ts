@@ -12,6 +12,9 @@ const envSchema = z.object({
   DATABASE_URL: z.url(),
 
   // AI settings: optional now, required in Phase 4
+  LLM_PROVIDER: z.enum(["claude", "gemini"]).default("gemini"),
+  EMBEDDING_PROVIDER: z.enum(["voyage", "gemini"]).default("voyage"),
+  GEMINI_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   LLM_MODEL: z.string().default("claude-sonnet-5-5"),
   VOYAGE_API_KEY: z.string().optional(),
