@@ -1,9 +1,37 @@
-import { loadEnv } from "./config/env.js";
-import { createApp } from "./app.js";
+import { z } from "zod";
 
-const env = loadEnv();
-const app = createApp();
+const optionalText = z
+  .string()
+  .trim()
+  .min(1)
+  .optional();
 
-app.listen(env.PORT, () => {
-  console.log(`API listening on http://localhost:${env.PORT}`);
+export const doctorsQuerySchema = z.object({
+  specialty: optionalText,
+  city: optionalText,
+  date: z.iso.date().optional(),
 });
+
+export const slotsQuerySchema = z.object({
+  date: z.iso.date().optional(),
+});
+
+export const idParamSchema = z.object({
+  id: z.coerce
+    .number()
+    .int()
+    .positive(),
+});
+
+export const bookBodySchema = z.object({
+  patientId: z
+    .number()
+    .int()
+    .positive(),
+  slotId: z
+    .number()
+    .int()
+    .positive(),
+});
+
+export type DoctorsQuery = z.infer<typeof doctorsQuerySchema>;
