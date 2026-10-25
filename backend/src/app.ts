@@ -5,6 +5,7 @@ import { AppError } from "./errors.js";
 import { doctorsRouter } from "./routes/doctors.js";
 import { appointmentsRouter } from "./routes/appointments.js";
 import { assistantRouter } from "./routes/assistant.js";
+import { patientsRouter } from "./routes/patients.js";
 
 export function createApp() {
   const app = express();
@@ -19,6 +20,7 @@ export function createApp() {
   app.use("/api/doctors", doctorsRouter);
   app.use("/api/appointments", appointmentsRouter);
   app.use("/api/assistant", assistantRouter);
+    app.use("/api/patients", patientsRouter);
   app.use((_req: Request, res: Response) => {
     res.status(404).json({ error: "Not found" });
   });
