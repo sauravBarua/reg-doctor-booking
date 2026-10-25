@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AppointmentStatus {
+  BOOKED
+  CANCELLED
+}
+
+model Specialty {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  doctors Doctor[]
+}
+
+model Clinic {
+  id      Int      @id @default(autoincrement())
+  name    String
+  city    String
+  address String
+  doctors Doctor[]
+}
+
+model Doctor {
+  id          Int       @id @default(autoincrement())
+  name        String
+  bio         String
+  specialtyId Int
+  clinicId    Int
+  specialty   Specialty @relation(fields: [specialtyId], references: [id])
+  clinic      Clinic    @relation(fields: [clinicId], references: [id])
+  slots       Slot[]
+
+  @@index([specialtyId])
+  @@index([clinicId])
+}
+
+model Slot {
+  id           Int           @id @default(autoincrement())
+  doctorId     Int
+  startsAt     DateTime
+  endsAt       DateTime
+  doctor       Doctor        @relation(fields: [doctorId], references: [id])
+  appointments Appointment[]
+
+  @@unique([doctorId, startsAt])
+  @@index([startsAt])
+}
+
+model Patient {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  appointments Appointment[]
+}
+
+model Appointment {
+  id          Int               @id @default(autoincrement())
+  patientId   Int
+  slotId      Int
+  status      AppointmentStatus @default(BOOKED)
+  createdAt   DateTime          @default(now())
+  cancelledAt DateTime?
+  patient     Patient           @relation(fields: [patientId], references: [id])
+  slot        Slot              @relation(fields: [slotId], references: [id])
+
+  @@index([slotId])
+  @@index([patientId])
+}
+
+model FaqDocument {
+  id      Int        @id @default(autoincrement())
+  title   String     @unique
+  content String
+  chunks  FaqChunk[]
+}
+
+model FaqChunk {
+  id         Int                    @id @default(autoincrement())
+  documentId Int
+  chunkIndex Int
+  content    String
+  embedding  Unsupported("vector(1024)")?
+  document   FaqDocument            @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, chunkIndex])
+}
