@@ -17,7 +17,13 @@ const EXAMPLES = [
   "A dermatologist in Lyon next Tuesday morning",
   "A pediatrician in Paris tomorrow afternoon",
   "Any cardiologist",
+  "A cardiologist in Lyon next Monday morning",
+  "A general practitioner in Paris this afternoon",
+  "A skin doctor in Lyon next week",
+  "A children's doctor in Paris tomorrow morning",
+  "Any doctor available tomorrow",
   "I have a rash, who should I see?",
+  "I have chest pain, who should I see?",
 ];
 
 export default function SearchPage() {

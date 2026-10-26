@@ -13,7 +13,8 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx --env-file=.env prisma/seed.ts",
     "db:embed": "tsx --env-file=.env prisma/embed-faq.ts",
-    "smoke:ai": "tsx --env-file=.env scripts/smoke-ai.ts"
+    "smoke:ai": "tsx --env-file=.env scripts/smoke-ai.ts",
+    "smoke:cardio": "tsx --env-file=.env scripts/smoke-cardiologist.ts"
   },
   "keywords": [],
   "author": "",
