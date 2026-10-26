@@ -15,6 +15,24 @@ services:
       timeout: 5s
       retries: 10
 
+  # One-off job: migrations + dummy data + FAQ embeddings.
+  # Run with: docker compose --profile setup run --rm setup
+  setup:
+    profiles: ["setup"]
+    build:
+      context: ./backend
+      target: build
+    env_file: ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://app:app@db:5432/doctor_booking
+    command: >
+      sh -c "pnpm prisma migrate deploy &&
+             pnpm tsx prisma/seed.ts &&
+             pnpm tsx prisma/embed-faq.ts"
+    depends_on:
+      db:
+        condition: service_healthy
+
   api:
     build: ./backend
     env_file: ./backend/.env
@@ -22,19 +40,28 @@ services:
       DATABASE_URL: postgresql://app:app@db:5432/doctor_booking
     ports:
       - "3001:3001"
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test:
+        ["CMD-SHELL", "wget -qO- http://localhost:3001/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   web:
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_API_URL: http://localhost:3001
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
     ports:
       - "3000:3000"
+    restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 
 volumes:
   pgdata:
